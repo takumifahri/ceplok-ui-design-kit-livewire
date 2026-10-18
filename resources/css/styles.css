@@ -1,0 +1,144 @@
+/*
+ * Entry stylesheet ceplok-ui/design-kit-livewire.
+ *
+ * Di resources/css/app.css aplikasi Laravel, cukup:
+ *
+ *   @import '../../vendor/ceplok-ui/design-kit-livewire/resources/css/styles.css';
+ *   @source '../../vendor/ceplok-ui/design-kit-livewire/resources/views/**\/*.blade.php';
+ *
+ * Tailwind v4 tidak memindai vendor/ secara otomatis. Tanpa baris @source itu
+ * komponen tetap ter-render, tetapi tanpa satu pun class utility-nya.
+ *
+ * Isinya sama dengan styles.css kit React, ditambah animasi masuk Alert,
+ * Badge, dan Toast di bagian bawah.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import 'tailwindcss';
+@import './tokens.css';
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-gray-50 font-sans text-content antialiased;
+    }
+
+    button,
+    a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+        @apply outline-2 outline-offset-2 outline-primary-600;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .ds-card {
+        @apply rounded-2xl border border-border bg-surface shadow-soft;
+    }
+
+    .ds-eyebrow {
+        @apply text-caption font-bold tracking-[0.14em] text-primary-700 uppercase;
+    }
+
+    .ds-nav-link {
+        @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-700;
+    }
+
+    .ds-nav-link.is-active {
+        @apply bg-primary-50 text-primary-700;
+    }
+
+    /* Scroll horizontal tipis dan bersih untuk baris type scale */
+    .ds-scroll-x {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-gray-300) transparent;
+    }
+
+    .ds-scroll-x::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .ds-scroll-x::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .ds-scroll-x::-webkit-scrollbar-thumb {
+        border-radius: 9999px;
+        background-color: var(--color-gray-300);
+    }
+
+    /*
+     * Scroll vertikal tipis untuk panel navigasi: batang 6px membulat, tanpa
+     * tombol panah. Chrome mengabaikan ::-webkit-scrollbar begitu
+     * scrollbar-width atau scrollbar-color diisi, dan versi standarnya masih
+     * menyisakan tombol panah di Windows — jadi properti standar hanya dipasang
+     * untuk browser yang tidak mengenal pseudo-element ini (Firefox).
+     */
+    .ds-scroll-y::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .ds-scroll-y::-webkit-scrollbar-track {
+        margin-block: 8px;
+        background: transparent;
+    }
+
+    /* Border transparan + padding-box: batangnya tidak menempel di tepi panel. */
+    .ds-scroll-y::-webkit-scrollbar-thumb {
+        border: 2px solid transparent;
+        border-radius: 9999px;
+        background-color: var(--color-gray-300);
+        background-clip: padding-box;
+    }
+
+    .ds-scroll-y::-webkit-scrollbar-thumb:hover,
+    .ds-scroll-y::-webkit-scrollbar-thumb:active {
+        background-color: var(--color-gray-400);
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+        .ds-scroll-y {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-gray-300) transparent;
+        }
+    }
+}
+
+/*
+ * Animasi masuk Alert, Badge yang bisa ditutup, dan Toast.
+ *
+ * Di kit React keduanya digerakkan transisi yang dipasang JavaScript satu frame
+ * setelah komponen muncul. Di Blade HTML-nya sudah utuh dari server, jadi kalau
+ * meniru cara itu, isinya sempat tampil, lalu hilang, lalu muncul lagi saat
+ * Alpine siap. Animasi CSS berjalan begitu elemen masuk ke halaman — saat
+ * halaman dimuat, saat Livewire menyisipkannya, dan saat ia dibuka lagi —
+ * tanpa menunggu JavaScript, dan isinya tetap terbaca bila JavaScript mati.
+ * Durasi dan kurvanya sama dengan transisi masuk di kit React.
+ */
+@theme {
+    --animate-ceplok-fade-in: ceplok-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --animate-ceplok-toast-in: ceplok-toast-in 300ms cubic-bezier(0, 0, 0.2, 1);
+
+    @keyframes ceplok-fade-in {
+        from {
+            opacity: 0;
+        }
+    }
+
+    @keyframes ceplok-toast-in {
+        from {
+            opacity: 0;
+            translate: 0 0.5rem;
+        }
+    }
+}

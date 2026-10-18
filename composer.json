@@ -1,0 +1,30 @@
+{
+    "name": "ceplok-ui/design-kit-livewire",
+    "description": "Komponen Blade + Alpine.js dan design token Ceplok Design System untuk aplikasi Laravel dan Livewire",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["laravel", "livewire", "blade", "alpinejs", "tailwindcss", "design-system"],
+    "require": {
+        "php": "^8.2",
+        "blade-ui-kit/blade-icons": "^1.6",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "illuminate/view": "^11.0|^12.0|^13.0",
+        "livewire/blaze": "^1.0"
+    },
+    "suggest": {
+        "livewire/livewire": "Livewire 4 membawa Alpine.js yang dipakai komponen interaktif, serta wire:model untuk komponen form."
+    },
+    "autoload": {
+        "psr-4": {
+            "CeplokUi\\DesignKit\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CeplokUi\\DesignKit\\DesignKitServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
