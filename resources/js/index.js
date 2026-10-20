@@ -28,6 +28,8 @@ import inputField from './components/input-field.js';
 import pagination from './components/pagination.js';
 import search from './components/search.js';
 import select from './components/select.js';
+import table from './components/table.js';
+import tablePreview from './components/table-preview.js';
 import textArea from './components/text-area.js';
 import upload from './components/upload.js';
 
@@ -41,8 +43,10 @@ export default function ceplok(Alpine) {
     Alpine.data('ceplokPagination', pagination);
     Alpine.data('ceplokSearch', search);
     Alpine.data('ceplokSelect', select);
+    Alpine.data('ceplokTable', table);
+    Alpine.data('ceplokTablePreview', tablePreview);
     Alpine.data('ceplokTextArea', textArea);
     Alpine.data('ceplokUpload', upload);
 }
 
-export { avatar, datepicker, dismissible, dropdown, floatingLabel, inputField, pagination, search, select, textArea, upload };
+export { avatar, datepicker, dismissible, dropdown, floatingLabel, inputField, pagination, search, select, table, tablePreview, textArea, upload };
