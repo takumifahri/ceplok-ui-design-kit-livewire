@@ -19,7 +19,8 @@ berulang kali di dalam komponen Livewire.
   radius, shadow, font Lato serta font alternatif Inter (`font-alt`) dan Arial
   (`font-alt-2`). Disalin apa adanya dari kit React.
 - **Komponen**: `alert`, `avatar`, `badge`, `breadcrumb`, `button`, `card`,
-  `container`, `dropdown`, `footer`, `hero`, `icon`, `pagination`, `spinner`,
+  `container`, `dropdown`, `footer`, `hero`, `icon`, `modal`, `pagination`,
+  `popover`, `spinner`, `table` (beserta `table-image` dan `table-file`),
   `toast`.
 - **Elemen form**: `checkbox`, `datepicker`, `floating-label`, `input-field`,
   `radio`, `search`, `select`, `text-area`, `toggle`, `upload`.
@@ -28,7 +29,8 @@ berulang kali di dalam komponen Livewire.
 - **Plugin Alpine** untuk perilaku interaktif: buka/tutup Alert, Badge, dan
   Toast, foto Avatar yang gagal dimuat, Pagination, panel Dropdown beserta
   daftar pilihan Select dan kategori Search, kalender Datepicker, Upload,
-  label Floating Label, kata sandi dan tombol hapus Input Field, serta
+  label Floating Label, kata sandi dan tombol hapus Input Field, seleksi
+  baris dan filter kolom Table, posisi Popover, buka/tutup Modal, serta
   toolbar Text Area.
 
 ## Persyaratan
@@ -147,6 +149,10 @@ adanya dan menolak nilai lain, tetapi bentuk yang dianjurkan tetap
 | `icon` | slot berisi `<svg>` yang memakai `currentColor` |
 | `breadcrumb` | `items` (`label`, `href`, `icon`, `attributes`), slot `separator`, `size`: `sm \| base`, `background`: `bg \| none`, `dark-mode` |
 | `pagination` | `current-page`, `total-pages`, `theme`: `default \| primary \| purple`, `size`: `base \| s \| responsive`, `url`, `dark-mode` |
+| `popover` | slot `trigger` (atribut slot menjadi props Button kit, atau `<button>` polos dengan `raw`), `title` (prop atau slot), slot isi, `side`: `top \| right \| bottom \| left`, `dark-mode`, `open` |
+| `modal` | slot `trigger` (seperti Popover; opsional bila diikat `wire:model`/`x-model`), `variant`: `default \| popup`, `size`: `s \| m`, `title` (prop atau slot), slot `footer`, `close-on-backdrop`, `close-on-escape`, `show-close-button`, `close-label`, `open` |
+| `table` | `columns` (array kolom: `key`, `header`, `cell`, `actions`, `image`, `file`, `children`, `sortable`, `sort-value`, `sort-fn`, `sort-directions`, `sort-resettable`, `sort-icon`, `align`, `header-align`, `emphasis`, `width`, `min-width`, `hideable`, `wrap`), `data` (array, Collection, atau `LengthAwarePaginator`), `row-key`, `size`: `normal \| compact`, `sticky`, `search`, `filter`, slot `actions`, `selectable`, `selected-keys`, `sort`, `sort-icon`, `header-align`, `pagination`, `manual`, `striped`, `loading`, `empty-text` |
+| `table-image`, `table-file` | Gambar atau berkas di sel Table, dengan pratinjau. `table-image`: `src`, `alt`, `caption`, `show-caption`, `preview`, `thumb-class`. `table-file`: `name`, `href`, `type`: `image \| pdf \| file`, `preview` |
 | `hero` | `type`, `centered-content`, `platform`, `heading`, `sub-heading`, `description`, `show-heading`, `show-button`, `button-label`, `button-href`, `button-attributes`, `image`, `image-alt`, `image-orientation`, slot `image-content`, `dark-mode` |
 | `footer` | `logo`/`logo-alt` atau slot `logo-content`, `menus`, `copyright` (prop atau slot), `socials`, `fluid` |
 | `dropdown` | slot `trigger` (atribut slot menjadi props Button kit, atau `<button>` polos dengan `raw`), `items` atau `groups` (`label`, `separator`, `items`), slot isi bebas, `attached`, `content-label`, `content-class`, `panel-id`, `dark-mode`. Tiap item: `label`, `description`, `icon`, `href`, `tone`: `default \| danger`, `disabled`, `selected`, `selected-when`, `attributes` |
@@ -185,6 +191,9 @@ terluar. `id` kontrol dibuat stabil bila tidak diisi, jadi `<label for>` dan
 | `upload` | `wire:model` untuk unggahan Livewire (`WithFileUploads`), termasuk berkas yang dijatuhkan ke area attach. Tombol Remove ikut mengosongkan propertinya. Event `files-change` (`detail.files`). |
 | `checkbox`, `radio`, `toggle` | `wire:model` dengan aturan Livewire: radio tercentang bila propertinya sama dengan `value`-nya, checkbox pada properti array bila `value`-nya ada di array itu, selebihnya mengikuti nilai boolean. Keadaan awalnya dirender server. |
 | `dropdown` | `'attributes' => ['wire:click' => 'hapus(3)']` per item; panel menutup sendiri setelah baris ditekan. Pada daftar pilihan, `selected` dibaca saat render dan `selected-when` (ekspresi Alpine) mengikutinya di browser. |
+| `table` | Urutan dan halaman milik server: judul kolom mengirim `sort-change` (`detail.sort`), tombol halaman `page-change` (`detail.page`), pilihan jumlah baris `page-size-change` (`detail.pageSize`): `wire:sort-change="$set('sort', $event.detail.sort)"`. Tanpa `manual` Table mengurutkan dan memotong `data` sendiri; `LengthAwarePaginator` otomatis `manual`. `wire:model` mengikat kunci baris yang dicentang (event `selection-change`). Kolom yang disembunyikan lewat Filter Data diurus Alpine (event `hidden-columns-change`). Kolom berisi closure, jadi buat di `render()` atau method, bukan properti publik. |
+| `popover` | `wire:model` mengikat buka/tutup ke properti boolean; event `open-change` (`detail.open`). Posisi dan panah dipasang lewat x-bind, jadi bertahan saat Livewire merender ulang. |
+| `modal` | `wire:model` mengikat buka/tutup, padanan `open` + `onOpenChange`; trigger lalu opsional. Event `open-change` (`detail.open`). `x-on:click="close()"` di dalam Modal menutupnya. `<dialog>`-nya `wire:ignore.self` supaya tidak ditutup morph saat komponen dirender ulang; ganti `wire:key` bila `variant`/`size` berubah dari server. |
 
 ```blade
 {{-- Filter yang bisa dihapus, terikat ke $filters['aktif'] --}}
@@ -215,9 +224,12 @@ nilai token lewat atribut `data-theme="dark"`:
 - Komponen tersebut ikut gelap bila salah satu pembungkusnya memakai
   `data-theme="dark"`. Bagian di dalamnya bisa dikembalikan terang dengan
   `data-theme="light"`.
-- `badge`, `avatar`, `pagination`, `dropdown`, `datepicker`, dan `upload`
-  belum berbasis token: `dark-mode` mengganti class warnanya langsung, sama
-  seperti di kit React.
+- `badge`, `avatar`, `pagination`, `popover`, `dropdown`, `datepicker`, dan
+  `upload` belum berbasis token: `dark-mode` mengganti class warnanya
+  langsung, sama seperti di kit React.
+- `modal` tidak punya `dark-mode`: dialognya mengikuti `data-theme`
+  pembungkusnya lewat token semantik, juga saat tampil di top layer, sama
+  seperti di kit React. `table` belum punya desain gelap.
 
 ## Ikon
 

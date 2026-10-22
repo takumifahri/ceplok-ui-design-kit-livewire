@@ -23,6 +23,28 @@ Rilis pertama, direncanakan sebagai `0.1.0`.
   API: penelusuran panah, Home/End, dan ketikan; bentuk `attached` yang
   menempel pada tombolnya. Daftar pilihan Select dan kategori Search memakai
   panel yang sama.
+- Table (`table`) setara kit React: toolbar pencarian, filter kolom, dan slot
+  aksi; kolom bertingkat, kolom menempel, baris zebra, size `compact`,
+  pengurutan per kolom (`sort-value`, `sort-fn`, `sort-directions`,
+  `sort-resettable`, `sort-icon`), seleksi baris dengan "pilih semua", tombol
+  aksi baris, kolom gambar dan berkas dengan pratinjau, serta pagination
+  dengan pilihan jumlah baris. Komponen pendukungnya `table-image` dan
+  `table-file`.
+  - Urutan dan halaman dikelola server: judul kolom dan tombol halaman
+    mengirim event `sort-change`, `page-change`, dan `page-size-change`.
+    Tanpa `manual` Table mengurutkan dan memotong `data` sendiri; paginator
+    Laravel (`LengthAwarePaginator`) otomatis dianggap `manual`.
+  - Baris yang dicentang diikat `wire:model` (event `selection-change`);
+    kolom yang disembunyikan diurus Alpine (event `hidden-columns-change`).
+- Popover (`popover`) setara kit React: panel informasi non-modal dengan
+  panah, Popover API untuk top layer, Escape, dan light dismiss; posisi
+  `side` yang berbalik dan dijepit di dalam layar; `dark-mode`; `wire:model`
+  dan event `open-change`.
+- Modal (`modal`) setara kit React: `<dialog>` bawaan dengan variant
+  `default` dan `popup`, size `s` dan `m`, slot `trigger` dan `footer`,
+  `close-on-backdrop`, `close-on-escape`, `show-close-button`, `wire:model`
+  dan event `open-change`. `<dialog>`-nya `wire:ignore.self` supaya tidak
+  ditutup morph Livewire saat komponen di sekitarnya dirender ulang.
 - Token CSS (`resources/css/tokens.css`) dan entry stylesheet
   (`resources/css/styles.css`), disalin dari kit React.
 - 411 ikon outline dan 340 ikon solid Flowbite (`ceplok-o-*`, `ceplok-s-*`)
@@ -31,7 +53,8 @@ Rilis pertama, direncanakan sebagai `0.1.0`.
 - Plugin Alpine (`resources/js/index.js`): `ceplokDismissible`,
   `ceplokAvatar`, `ceplokPagination`, `ceplokDropdown`, `ceplokSelect`,
   `ceplokSearch`, `ceplokDatepicker`, `ceplokUpload`, `ceplokFloatingLabel`,
-  `ceplokInputField`, dan `ceplokTextArea`.
+  `ceplokInputField`, `ceplokTextArea`, `ceplokTable`, `ceplokTablePreview`,
+  `ceplokPopover`, dan `ceplokModal`.
 - Enum untuk setiap prop berpilihan (`CeplokUi\DesignKit\Enums`) dan
   pemeriksa prop saat render: error yang jelas saat `app.debug` aktif, nilai
   bawaan plus laporan ke log di production.
