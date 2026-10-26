@@ -26,5 +26,11 @@
             ]
         }
     },
+    "authors": [
+        {
+            "name": "Fahri R",
+            "email": "takumifahri@apps.ipb.ac.id"
+        }
+    ],
     "minimum-stability": "stable"
 }
