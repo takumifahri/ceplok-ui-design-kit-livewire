@@ -46,9 +46,26 @@ berulang kali di dalam komponen Livewire.
 composer require ceplok-ui/design-kit-livewire
 ```
 
-Service provider terdaftar otomatis (package discovery). Selama paket belum
-dipublikasikan ke registry, pasang lewat path repository; lihat
-[packages/README.md](../README.md).
+Paketnya tersedia di [Packagist](https://packagist.org/packages/ceplok-ui/design-kit-livewire).
+Service provider terdaftar otomatis (package discovery), jadi komponen
+`<x-ceplok::…>` langsung bisa dipakai setelah CSS dan JavaScript di bawah
+dipasang.
+
+Selama versinya masih `0.x`, rilis minor (mis. `0.1` ke `0.2`) boleh memutus
+kompatibilitas; `^0.1` hanya mengambil `0.1.x`. Perubahan yang memutus
+kompatibilitas ditandai di [CHANGELOG.md](CHANGELOG.md).
+
+Untuk mengembangkan kit dari salinan lokal, arahkan Composer ke foldernya
+lewat path repository di `composer.json` aplikasi:
+
+```json
+"repositories": [
+    { "type": "path", "url": "../design-kit-livewire" }
+]
+```
+
+lalu `composer require ceplok-ui/design-kit-livewire:@dev`. Composer membuat
+symlink, jadi perubahan di folder kit langsung terbaca aplikasi.
 
 ### CSS
 
